@@ -1,0 +1,27 @@
+
+buildscript {
+    ext {
+        springBootVersion = '2.1.3.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+    }
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = 'com.colini.friday'
+//    version = '0.0.1-SNAPSHOT'
+
+    targetCompatibility = 1.8
+    sourceCompatibility = 1.8
+}

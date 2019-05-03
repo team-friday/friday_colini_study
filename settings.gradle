@@ -1,0 +1,6 @@
+rootProject.name = 'friday_colini_study'
+
+include 'study-messaging'
+include 'study-api'
+include 'study-core'
+

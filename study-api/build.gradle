@@ -1,0 +1,19 @@
+description 'back-end api application.'
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+jar {
+    archiveName = 'study-api.jar'
+}
+
+dependencies {
+    compile project(':study-core')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compileOnly('org.projectlombok:lombok')
+    runtime('mysql:mysql-connector-java')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+

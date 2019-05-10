@@ -35,57 +35,80 @@ testCompile('org.mockito:mockito-core:2.11.0')
 ```
 
 
+### project structure
 
-### 요구사항 
+- study-api : study channel api server 
 
-1. 스터디 채팅 룸 생성, 관리 
-- chat room 관련 CRUD 대한 응답 요청은 http rest api 사용
-- 사용자 개인이 채팅방 생성 기준
-- back-end 구조를 따른다.
-- 메시지 내용은 api로 제공하지 않는다.
+```
+1) 스터디 채팅 채널 추가, 삭제, 변경, 조회 
+2) 채팅 채널에 멤버 추가, 삭제, 변경, 조회
+ 
+    - chat room 관련 CRUD 대한 응답 요청은 http rest api 사용
+    - 사용자 개인의 채팅방 생성 기준
+```
+- study-core : study domain api
+
+```
+- DDD 기반 설계
+- domain layer, infastructure layer만 존재함
+- bounded context : 메세지-채널 도메인 분리    
+
+```
+
+- study-messaging : study chatting messaging server
+
+```
+
+- redis 저장, 만료기간은 6개월
+- db에는 저장 x
+- 채팅 데이터는 JSON 형식으로 저장 
+- websocket을 통한 메시지 데이터를 비동기로 처리
 
 
-2. 비동기 채팅 서버 구현
-- webflux(based-netty-container), rxjava, reactive-redis, lettuce 
-- websocket을 통한 메시지 데이터 처리 사항에 대한 모든 것은 비동기로 처리.
+- text frame -> 서버에서 json 변경
 
+    - key : v1/chat/user/[topic]
+    - values : Json Data
 
-3. 기타
-- redis는 event-loop 기반 모델의 싱글 쓰레드, redis pub/sub 활용
-- web mvc, JPA (jpa 혹은 jdbc 자체가 blocking API 이므로, 스프링은 web mvc를 사용할 것을 권고)
-( https://redis.io/topics/latency#single-threaded-nature-of-redis )
+ex)
+    {
+       "createdAt" : "20190502101125",
+       "expired" : "20191102101125",
+       "message" : "test1",
+       "id" : "choi",
+       "session" : "uuid-32",
+       "channel" : "chat/choi/java"  
+    }
 
+``` 
 
 
 ### DB 모델링  
 
 ![Alt text](./study-core/src/main/resources/model.png)
 
-- study-channel (channelId, channelName, userName, createdAt)
-- study-channel-member (id, userName, authority, registerAt, modifiedAt, channelId)
+1. study-channel (channelId, channelName, userName, createdAt)
+      
+2. study-channel-member (id, userName, authority, registerAt, modifiedAt, channelId)
 
+    - channel과 channel-member의 관계는 1:N
+    
+    
+    
+### REST API
 
+- URI prefix : /study/api
 
-### message data format
-
-- 메시징 처리 
-- text frame -> 서버에서 json 변경
-- redis pub / sub 을 통해 topic - users 매칭
-
-
-key : v1/chat/user/[topic]
-values :
-
-ex)
-```json
-{
-   "createdAt" : "20190502101125",
-   "expired" : "20191102101125",
-   "message" : "test1",
-   "id" : "choi",
-   "session" : "uuid-32",
-   "room" : "chat/choi/java"  
-}
-```
-
+| Method | URI | Action |  
+| :------------ | :-----------: | -------------------: | 
+| POST | /channel/{channelName} | create channel | 
+| PATCH | /channel/{id} | update channel | 
+| DELETE | /channel/{id} | delete channel  |
+| GET | /channel/{id} | get channel  |
+| GET | /channel/{id}/members | get channel member List  |
+| POST | /channel/{id}/member/{userName} | add channel member  |
+| PATCH | /channel/{id}/member/{id} | update channel member  |
+| DELETE | /channel/{id}/member/{id} | delete channel member  |
+| GET | /channel/{id}/member/{id} | get channel member  |
+| GET | /channel/{id}/messages | get channel messages from redis (limited 1000) |
 

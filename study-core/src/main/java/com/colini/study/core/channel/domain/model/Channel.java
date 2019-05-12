@@ -1,5 +1,7 @@
 package com.colini.study.core.channel.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,5 +42,6 @@ public class Channel implements Serializable {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ChannelMember> channelMembers = new ArrayList<>();
 }

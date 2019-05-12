@@ -1,6 +1,7 @@
 package com.colini.study.core.channel.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class ChannelMember implements Serializable {
 
     @ManyToOne(targetEntity = Channel.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name ="channelId")
+    @JsonBackReference
     private Channel channel;
 
     @Column(name = "userName", nullable = false)

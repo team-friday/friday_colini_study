@@ -39,11 +39,6 @@ public class Channel implements Serializable {
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    public void createdAt() {
-        this.createdAt = LocalDateTime.now();
-    }
-
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChannelMember> channelMembers = new ArrayList<>();
 }

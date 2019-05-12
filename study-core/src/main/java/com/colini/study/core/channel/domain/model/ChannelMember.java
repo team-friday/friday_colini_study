@@ -45,10 +45,4 @@ public class ChannelMember implements Serializable {
     @CreatedDate
     @Column(name = "modifiedAt", nullable = false)
     private LocalDateTime modifiedAt;
-
-    @PrePersist
-    public void createdAt() {
-        this.registerAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-    }
 }

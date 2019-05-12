@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity(name = "CHANNEL_MEMBER")
@@ -42,9 +43,11 @@ public class ChannelMember implements Serializable {
     private String authority;
 
     @Column(name = "registerAt", nullable = false)
-    private LocalDateTime registerAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registerAt;
 
     @CreatedDate
     @Column(name = "modifiedAt", nullable = false)
-    private LocalDateTime modifiedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedAt;
 }

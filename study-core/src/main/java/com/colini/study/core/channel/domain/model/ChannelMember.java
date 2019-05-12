@@ -31,7 +31,7 @@ public class ChannelMember implements Serializable {
     @Column(name = "id", nullable = false)
     private long id;
 
-    @ManyToOne(targetEntity = Channel.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Channel.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name ="channelId")
     @JsonBackReference
     private Channel channel;

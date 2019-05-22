@@ -1,6 +1,7 @@
 package com.colini.study.core.channel.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity(name = "CHANNEL_MEMBER")
@@ -29,8 +31,9 @@ public class ChannelMember implements Serializable {
     @Column(name = "id", nullable = false)
     private long id;
 
-    @ManyToOne(targetEntity = Channel.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Channel.class, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name ="channelId")
+    @JsonBackReference
     private Channel channel;
 
     @Column(name = "userName", nullable = false)
@@ -40,15 +43,11 @@ public class ChannelMember implements Serializable {
     private String authority;
 
     @Column(name = "registerAt", nullable = false)
-    private LocalDateTime registerAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registerAt;
 
     @CreatedDate
     @Column(name = "modifiedAt", nullable = false)
-    private LocalDateTime modifiedAt;
-
-    @PrePersist
-    public void createdAt() {
-        this.registerAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-    }
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedAt;
 }

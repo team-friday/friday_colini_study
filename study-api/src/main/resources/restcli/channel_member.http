@@ -1,0 +1,39 @@
+
+### Create test channel
+POST http://localhost:8080/study/api/channel/member/add
+Content-Type: application/json
+
+{
+  "channel": {
+    "userName": "choi",
+    "channelName": "java",
+    "channelId": 1
+  },
+  "userName": "kim",
+  "authority": "R"
+}
+
+### Get test channel
+GET http://localhost:8080/study/api/channel/member/2
+
+
+### Update test channel
+PATCH http://localhost:8080/study/api/channel/member/1
+Content-Type: application/json
+
+{
+  "channel": {
+    "userName": "choi",
+    "channelName": "java",
+    "channelId": 1
+  },
+  "userName": "PARK",
+  "authority": "W"
+}
+
+
+### Delete test channel
+DELETE http://localhost:8080/study/api/channel/member/1
+Content-Type: application/json
+
+###

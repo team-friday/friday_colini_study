@@ -9,7 +9,6 @@ jar {
 
 dependencies {
     compile project(':study-core')
-    compile('io.reactivex.rxjava2:rxjava:2.2.2')
     compile('org.springframework.boot:spring-boot-starter-webflux')
 
     compile("org.springframework.boot:spring-boot-starter-websocket") {

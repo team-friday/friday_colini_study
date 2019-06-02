@@ -30,7 +30,7 @@ public class ChatMessageProvider {
     public String set(ChatMessage chatMessage) {
         try {
             String value = OBJECT_MAPPER.writeValueAsString(chatMessage);
-            log.debug("Cache set: {} => {}", getKey(chatMessage.getChannelId()), value);
+            log.info("cache set: {} => {}", getKey(chatMessage.getChannelId()), value);
             return redisConnection.sync().setex(getKey(chatMessage.getChannelId()), expireTimeSeconds, value);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
@@ -42,7 +42,7 @@ public class ChatMessageProvider {
         try {
             String value = OBJECT_MAPPER.writeValueAsString(chatMessage);
 
-            log.debug("Cache hset add: {} => {}", getKey(chatMessage.getChannelId()), value);
+            log.info("cache hset add: {} => {}", getKey(chatMessage.getChannelId()), value);
             return redisConnection.sync().hset(getKey(chatMessage.getChannelId()), chatMessage.getMessageId(), value);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
@@ -56,7 +56,7 @@ public class ChatMessageProvider {
                 .defaultIfEmpty(null)
                 .map(value -> value.entrySet().stream().map(Map.Entry::getValue).collect(toList()))
                 .map(list -> {
-                    log.info("Cache {} => {} count :{}", (list != null) ? "hit" : "miss", getKey(id), (list != null) ? list.size() : null);
+                    log.info("cache {} => {} count :{}", (list != null) ? "hit" : "miss", getKey(id), (list != null) ? list.size() : null);
                     return convert(list,ChatMessage.class);
                 });
     }

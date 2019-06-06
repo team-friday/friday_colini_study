@@ -26,14 +26,11 @@ public class SessionManager {
     }
 
     /*
-     * 로직 변경 필요 시간 소요 많음.
+     * 로직 변경 필요 key set.
      */
-    public boolean remove(WebSocketSession session) {
-        while(getSessionMap().values().iterator().hasNext()){
-            log.info("websocket session remove -= {}", session);
-            return getSessionMap().values().iterator().next().removeIf(Predicate.isEqual(session));
-        }
-        return false;
+    public boolean remove(long channelId, WebSocketSession session) {
+        log.info("websocket session remove -= {}", session);
+        return getSessionMap().get(channelId).removeIf(Predicate.isEqual(session));
     }
 
     public List<WebSocketSession> getAll(long channelId) {
@@ -49,7 +46,7 @@ public class SessionManager {
 
     public boolean isExist(long channelId, WebSocketSession session) {
         return getSessionMap().get(channelId) != null &&
-                getSessionMap().get(channelId).stream().anyMatch(Predicate.isEqual(session));
+                getSessionMap().get(channelId).contains(session);
     }
 
 }

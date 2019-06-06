@@ -34,10 +34,9 @@ public class ChatMessageServiceTests {
 
         messageService.addSession(channelId,session);
 
-        verify(sessionManager, times(2)).isExist(channelId, session);
         verify(sessionManager, times(1)).put(channelId, session);
 
-        given(sessionManager.get(channelId,session)).willReturn(session);
+//        given(sessionManager.get(channelId,session)).willReturn(session);
     }
 
     @Test

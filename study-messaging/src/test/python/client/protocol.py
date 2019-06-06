@@ -13,6 +13,7 @@ class WebSocketProtocolProvider(object):
     @staticmethod
     def mak_send_json(message):
         data = {
+            "type": "SEND",
             "createdAt": "20190502101125",
             "expired": "20191102101125",
             "message": message,
@@ -23,6 +24,31 @@ class WebSocketProtocolProvider(object):
         json_data = json.dumps(data)
         return json_data
 
+    @staticmethod
+    def make_join_json():
+        data = {
+            "type": "JOIN",
+            "createdAt": "20190502101125",
+            "expired": "20191102101125",
+            "userName": "K",
+            "messageId": str(uuid.uuid4()),
+            "channelId": 1
+        }
+        json_data = json.dumps(data)
+        return json_data
+
+    @staticmethod
+    def make_left_json():
+        data = {
+            "type": "LEFT",
+            "createdAt": "20190502101125",
+            "expired": "20191102101125",
+            "userName": "K",
+            "messageId": str(uuid.uuid4()),
+            "channelId": 1
+        }
+        json_data = json.dumps(data)
+        return json_data
 
 class V3WebSocketProtocol(WebSocketClientProtocol):
     def onConnect(self, response):
@@ -32,6 +58,8 @@ class V3WebSocketProtocol(WebSocketClientProtocol):
 
     def onOpen(self):
         logger.info("WebSocket connection open.")
+        data = WebSocketProtocolProvider.make_join_json()
+        transport.sendMessage(data.encode('utf-8'))
 
     def onMessage(self, payload, isBinary):
         """
@@ -40,7 +68,6 @@ class V3WebSocketProtocol(WebSocketClientProtocol):
         :param isBinary: Boolean
         :return:
         """
-        print(payload)
         if not isBinary:
             self.data_received_callback(payload)
 
@@ -56,11 +83,14 @@ class V3WebSocketProtocol(WebSocketClientProtocol):
 
     @staticmethod
     def close():
+        data = WebSocketProtocolProvider.make_left_json()
+        transport.sendMessage(data.encode('utf-8'))
         transport.transport.loseConnection()
 
     @staticmethod
     def data_received_callback(payload):
         logger.info("Text message received: {0}".format(payload.decode('utf8')))
+
 
     @staticmethod
     def data_err_callback(err):

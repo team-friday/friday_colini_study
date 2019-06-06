@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.web.reactive.socket.CloseStatus;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -31,23 +30,7 @@ public class StudyWebSocketHandler implements WebSocketHandler {
     @Override
     public Mono<Void> handle(WebSocketSession webSocketSession) {
 
-        WebSocketMessageSubscriber subscriber = new WebSocketMessageSubscriber(eventPublisher);
-
-        webSocketSession.receive().log()
-                .map(WebSocketMessage::getPayloadAsText)
-                .map(this::toChatMessage)
-                .doOnNext(chatMessage -> chatMessageService.addSession(chatMessage.getChannelId(), webSocketSession))
-                .doOnNext(chatMessageService::saveMessage)
-                .doOnComplete(() -> {
-                    webSocketSession.close(CloseStatus.GOING_AWAY);
-                    chatMessageService.removeSession(webSocketSession);
-                })
-                .doOnError(throwable -> {
-                    log.error(throwable.getMessage());
-                    webSocketSession.close(CloseStatus.BAD_DATA);
-                })
-                .subscribeOn(Schedulers.parallel())
-                .subscribe(subscriber::onNext, subscriber::onError, subscriber::onComplete);
+        messageAnalyze(webSocketSession);
 
         Flux<WebSocketMessage> pongFlux = Flux.generate(synchronousSink -> {
             synchronousSink.next(webSocketSession.pongMessage(DataBufferFactory::allocateBuffer));
@@ -59,6 +42,34 @@ public class StudyWebSocketHandler implements WebSocketHandler {
                         .concatWith(Flux.interval(Duration.ofSeconds(3))
                                         .zipWith(pongFlux, (time, event) -> event).log()));
       }
+
+
+    private void messageAnalyze(WebSocketSession webSocketSession) {
+
+        WebSocketMessageSubscriber subscriber = new WebSocketMessageSubscriber(eventPublisher);
+
+        webSocketSession.receive().log()
+                        .map(WebSocketMessage::getPayloadAsText)
+                        .map(this::toChatMessage)
+                        .doOnNext(chatMessage -> messageTypeCheck(webSocketSession, chatMessage))
+                        .doOnNext(chatMessageService::saveMessage)
+                        .doOnComplete(() -> {
+//                            webSocketSession.close(CloseStatus.GOING_AWAY);
+                        })
+                        .doOnError(throwable -> {
+                            log.error(throwable.getMessage());
+                        })
+                        .subscribeOn(Schedulers.parallel())
+                        .subscribe(subscriber::onNext, subscriber::onError, subscriber::onComplete);
+    }
+
+    private void messageTypeCheck(WebSocketSession webSocketSession, ChatMessage chatMessage) {
+        if(ChatMessage.Type.valueOf(chatMessage.getType()) == ChatMessage.Type.JOIN){
+            chatMessageService.addSession(chatMessage.getChannelId(), webSocketSession);
+        } else if(ChatMessage.Type.valueOf(chatMessage.getType()) == ChatMessage.Type.LEFT){
+            chatMessageService.removeSession(chatMessage.getChannelId(), webSocketSession);
+        }
+    }
 
 
     private ChatMessage toChatMessage(String payload){
@@ -75,4 +86,7 @@ public class StudyWebSocketHandler implements WebSocketHandler {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }

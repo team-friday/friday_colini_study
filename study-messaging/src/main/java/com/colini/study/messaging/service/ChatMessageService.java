@@ -16,23 +16,22 @@ public class ChatMessageService {
     private final SessionManager sessionManager;
     private final ChatMessageProvider messageProvider;
 
-    public boolean addSession(long channelId, WebSocketSession webSocketSession) {
-        if (!sessionManager.isExist(channelId, webSocketSession)) {
-            sessionManager.put(channelId, webSocketSession);
-        }
-        return sessionManager.isExist(channelId, webSocketSession);
+    //exist login 제거
+    public void addSession(long channelId, WebSocketSession webSocketSession) {
+        sessionManager.put(channelId, webSocketSession);
     }
 
-    public boolean removeSession(WebSocketSession webSocketSession) {
-        return sessionManager.remove(webSocketSession);
+    public boolean removeSession(long channelId, WebSocketSession webSocketSession) {
+        return sessionManager.remove(channelId, webSocketSession);
     }
 
+    // TODO: multi로 변경
     public boolean saveMessage(ChatMessage chatMessage) {
-        boolean addCk = messageProvider.add(chatMessage);
-        boolean setEx = false;
-        if (addCk) {
-            setEx = messageProvider.expireTimeSeconds(chatMessage.getChannelId());
+        boolean isSaved = messageProvider.add(chatMessage);
+        boolean isSuccess = false;
+        if (isSaved) {
+            isSuccess = messageProvider.expireTimeSeconds(chatMessage.getChannelId());
         }
-        return addCk && setEx;
+        return isSaved && isSuccess;
     }
 }

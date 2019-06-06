@@ -45,7 +45,9 @@ public class WebSocketConfig {
 
     /**
      * @{link} https://projectreactor.io/docs/core/release/api/reactor/core/publisher/UnicastProcessor.html
+     *
      */
+    // TODO: dynamic eventPublisher set -> redis get and create
     @Bean
     public Flux<ChatMessage> events() {
         return eventPublisher()

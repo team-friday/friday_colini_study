@@ -110,4 +110,40 @@ public class MessageCachingTests {
         assertThat(subscriber.getOnNextEvents().size(), is(1)); //values size
     }
 
+    @Test
+    public void messageTypeSetTest(){
+
+        long channelId = 100;
+
+        ChatMessage message = ChatMessage.builder().channelId(channelId)
+                .message("echo")
+                .createdAt(LocalDateTime.now().toString())
+                .messageId(UUID.randomUUID().toString())
+                .userName("choi")
+                .type(ChatMessage.Type.SEND.name())
+                .build();
+
+        boolean setResult = provider.add(message);
+
+
+        TestSubscriber<List<ChatMessage>> subscriber = new TestSubscriber<>();
+
+        provider.getAll(channelId).subscribe(subscriber);
+
+        /*
+            event가 complete 될 때까지 기다린다.
+         */
+        subscriber.awaitTerminalEvent();
+
+        //then
+        assertThat(setResult, is(true));
+
+        subscriber.assertCompleted();
+        subscriber.assertNoErrors();
+        subscriber.assertValueCount(1); //list size
+        assertThat(subscriber.getOnNextEvents().size(), is(1)); //values size
+        List<ChatMessage> chatMessages = subscriber.getOnNextEvents().get(0);
+        assertThat(chatMessages.get(chatMessages.size()-1).getType(), is(ChatMessage.Type.JOIN)); //values size
+    }
+
 }

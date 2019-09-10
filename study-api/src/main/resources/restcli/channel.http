@@ -1,0 +1,31 @@
+
+### Create test channel
+POST http://localhost:8080/study/api/channel/create
+Content-Type: application/json
+
+{
+  "channelName": "test",
+  "userName": "test user"
+}
+
+### Get test channel
+GET http://localhost:8080/study/api/channel/1
+
+
+### Update test channel
+PATCH http://localhost:8080/study/api/channel/1
+Content-Type: application/json
+
+{
+  "channelName": "test",
+  "userName": "test user"
+}
+
+### Delete test channel
+DELETE http://localhost:8080/study/api/channel/1
+Content-Type: application/json
+
+### Get Channel Members
+GET http://localhost:8080/study/api/channel/1/members
+
+###

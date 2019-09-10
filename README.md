@@ -101,14 +101,14 @@ ex)
 
 | Method | URI | Action |  
 | :------------ | :-----------: | -------------------: | 
-| POST | /channel/{channelName} | create channel | 
+| POST | /channel/create | create channel | 
 | PATCH | /channel/{id} | update channel | 
 | DELETE | /channel/{id} | delete channel  |
 | GET | /channel/{id} | get channel  |
 | GET | /channel/{id}/members | get channel member List  |
-| POST | /channel/{id}/member/{userName} | add channel member  |
-| PATCH | /channel/{id}/member/{id} | update channel member  |
-| DELETE | /channel/{id}/member/{id} | delete channel member  |
-| GET | /channel/{id}/member/{id} | get channel member  |
+| POST | /channel/member/add | add channel member  |
+| PATCH | /channel/member/{id} | update channel member  |
+| DELETE | /channel/member/{id} | delete channel member  |
+| GET | /channel/member/{id} | get channel member  |
 | GET | /channel/{id}/messages | get channel messages from redis (limited 1000) |
 

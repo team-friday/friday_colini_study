@@ -75,9 +75,9 @@ ex)
        "createdAt" : "20190502101125",
        "expired" : "20191102101125",
        "message" : "test1",
-       "id" : "choi",
-       "session" : "uuid-32",
-       "channel" : "chat/choi/java"  
+       "userName" : "choi",
+       "messageID" : "uuid-32",
+       "channelID" : 1
     }
 
 ``` 

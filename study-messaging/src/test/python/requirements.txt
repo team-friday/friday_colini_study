@@ -1,5 +1,5 @@
 attrs==19.1.0
-autobahn==19.3.3
+autobahn==20.12.3
 Automat==0.7.0
 constantly==15.1.0
 hexdump==3.3
